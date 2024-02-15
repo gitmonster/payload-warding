@@ -42,13 +42,14 @@ var Warden = /** @class */ (function () {
     /**
      * Wards the given {@link CollectionConfig} or {@link GlobalConfig}.
      */
-    Warden.prototype.ward = function (config, collection) {
+    Warden.prototype.ward = function (config, collection, verbsToAffect) {
+        if (verbsToAffect === void 0) { verbsToAffect = verb_1.default.verbs; }
         if (!config.access)
             config.access = {};
         if (collection && feat_1.default.collection(config, true)) {
             config = this.collectionSpecific(config);
         }
-        return this.endpoints(this.fields(this.cru(config, { feature: config.slug }, {})));
+        return this.endpoints(this.fields(this.cru(config, { feature: config.slug }, {}, verbsToAffect), verbsToAffect));
     };
     /**
      * Wards {@link CollectionConfig} specific accesses.
@@ -70,13 +71,13 @@ var Warden = /** @class */ (function () {
     /**
      * Wards fields.
      */
-    Warden.prototype.fields = function (config) {
+    Warden.prototype.fields = function (config, allowedVerbs) {
         var _this = this;
         config.fields = config.fields.map(function (x) {
             if ((0, types_1.fieldAffectsData)(x)) {
                 if (!x.access)
                     x.access = {};
-                x = _this.cru(x, { feature: config.slug, trait: x.name }, config);
+                x = _this.cru(x, { feature: config.slug, trait: x.name }, config, allowedVerbs);
             }
             return x;
         });
@@ -123,15 +124,21 @@ var Warden = /** @class */ (function () {
     /**
      * Wards `create` / `read` / `update` accesses.
      */
-    Warden.prototype.cru = function (it, _a, parent) {
+    Warden.prototype.cru = function (it, _a, parent, verbsToAffect) {
         var feature = _a.feature, trait = _a.trait;
         var ex = {
             feature: feature,
             traits: trait ? [trait] : [],
         };
-        it.access.create = this.verbed(ex, it, verb_1.default.Verb.CREATE, parent);
-        it.access.read = this.verbed(ex, it, verb_1.default.Verb.READ, parent);
-        it.access.update = this.verbed(ex, it, verb_1.default.Verb.UPDATE, parent);
+        if (verbsToAffect.includes(verb_1.default.Verb.CREATE)) {
+            it.access.create = this.verbed(ex, it, verb_1.default.Verb.CREATE, parent);
+        }
+        if (verbsToAffect.includes(verb_1.default.Verb.READ)) {
+            it.access.read = this.verbed(ex, it, verb_1.default.Verb.READ, parent);
+        }
+        if (verbsToAffect.includes(verb_1.default.Verb.UPDATE)) {
+            it.access.update = this.verbed(ex, it, verb_1.default.Verb.UPDATE, parent);
+        }
         return it;
     };
     /**

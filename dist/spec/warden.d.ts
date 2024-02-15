@@ -2,6 +2,7 @@ import { type CollectionConfig, type GlobalConfig } from "payload/types";
 import type { StringLiteral } from "../kit/typing";
 import { type Access, type Expectation } from "./access";
 import type { Spec } from "./definition/collections";
+import { Verb } from "./definition/verb";
 /**
  * Warden of the north!
  */
@@ -11,7 +12,7 @@ export declare class Warden {
     /**
      * Wards the given {@link CollectionConfig} or {@link GlobalConfig}.
      */
-    ward<T extends CollectionConfig | GlobalConfig>(config: T, collection?: true): T;
+    ward<T extends CollectionConfig | GlobalConfig>(config: T, collection?: true, verbsToAffect?: Verb[]): T;
     /**
      * Wards {@link CollectionConfig} specific accesses.
      */
@@ -19,7 +20,7 @@ export declare class Warden {
     /**
      * Wards fields.
      */
-    fields<T extends CollectionConfig | GlobalConfig>(config: T): T;
+    fields<T extends CollectionConfig | GlobalConfig>(config: T, allowedVerbs: Verb[]): T;
     /**
      * Wards endpoints.
      */
@@ -39,7 +40,7 @@ export declare class Warden {
         trait?: string;
     }, parent: {
         custom?: any;
-    }): T;
+    }, verbsToAffect: Verb[]): T;
     /**
      * A verbed variant of {@link ck}, which will check the parent for the verb's
      * access, and then put the verb in the verbs array.

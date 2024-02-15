@@ -1,5 +1,5 @@
 import type { Config, Plugin } from "payload/config";
-
+import verb from "./spec/definition/verb";
 import { Warding } from "./factory/warding";
 import type { Opts } from "./types";
 
@@ -34,7 +34,14 @@ function warding({ root, user, role, label, ext, mod, mute }: Opts): Plugin {
         ...incoming.admin,
         user: user.slug,
       },
-      globals: incoming.globals?.map(x => w.warden.ward(x)) ?? [],
+      globals:
+        incoming.globals?.map(x =>
+          w.warden.ward(x, undefined, [
+            verb.Verb.DELETE,
+            verb.Verb.READ,
+            verb.Verb.UPDATE,
+          ]),
+        ) ?? [],
       collections: [
         ...(incoming.collections?.map(x => w.warden.ward(x, true)) ?? []),
         w.warden.ward(w.collections.user, true),

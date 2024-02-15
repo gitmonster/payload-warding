@@ -74,6 +74,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Warden = exports.shy = exports.cascading = exports.access = exports.convention = void 0;
+var verb_1 = __importDefault(require("./spec/definition/verb"));
 var warding_1 = require("./factory/warding");
 /**
  * Create the warding {@link Plugin}.
@@ -96,7 +97,13 @@ function warding(_a) {
             // modify the warding built result if possible
             w = mod(w);
         }
-        return __assign(__assign({}, incoming), { admin: __assign(__assign({}, incoming.admin), { user: user.slug }), globals: (_d = (_c = incoming.globals) === null || _c === void 0 ? void 0 : _c.map(function (x) { return w.warden.ward(x); })) !== null && _d !== void 0 ? _d : [], collections: __spreadArray(__spreadArray([], ((_f = (_e = incoming.collections) === null || _e === void 0 ? void 0 : _e.map(function (x) { return w.warden.ward(x, true); })) !== null && _f !== void 0 ? _f : []), true), [
+        return __assign(__assign({}, incoming), { admin: __assign(__assign({}, incoming.admin), { user: user.slug }), globals: (_d = (_c = incoming.globals) === null || _c === void 0 ? void 0 : _c.map(function (x) {
+                return w.warden.ward(x, undefined, [
+                    verb_1.default.Verb.DELETE,
+                    verb_1.default.Verb.READ,
+                    verb_1.default.Verb.UPDATE,
+                ]);
+            })) !== null && _d !== void 0 ? _d : [], collections: __spreadArray(__spreadArray([], ((_f = (_e = incoming.collections) === null || _e === void 0 ? void 0 : _e.map(function (x) { return w.warden.ward(x, true); })) !== null && _f !== void 0 ? _f : []), true), [
                 w.warden.ward(w.collections.user, true),
                 w.warden.ward(w.collections.role, true),
             ], false), onInit: function (payload) { return __awaiter(_this, void 0, void 0, function () {

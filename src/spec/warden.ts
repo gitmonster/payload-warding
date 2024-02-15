@@ -12,7 +12,7 @@ import access, { type Access, type Expectation } from "./access";
 import type { Spec } from "./definition/collections";
 import feat from "./definition/feat";
 import rule from "./definition/rule";
-import verb from "./definition/verb";
+import verb, { Verb } from "./definition/verb";
 import ward from "./definition/ward";
 
 /**
@@ -27,6 +27,7 @@ export class Warden {
   ward<T extends CollectionConfig | GlobalConfig>(
     config: T,
     collection?: true,
+    verbsToAffect: Verb[] = verb.verbs,
   ): T {
     if (!config.access) config.access = {};
 
@@ -35,7 +36,10 @@ export class Warden {
     }
 
     return this.endpoints(
-      this.fields(this.cru(config, { feature: config.slug }, {})),
+      this.fields(
+        this.cru(config, { feature: config.slug }, {}, verbsToAffect),
+        verbsToAffect,
+      ),
     );
   }
 
@@ -75,11 +79,19 @@ export class Warden {
   /**
    * Wards fields.
    */
-  fields<T extends CollectionConfig | GlobalConfig>(config: T): T {
+  fields<T extends CollectionConfig | GlobalConfig>(
+    config: T,
+    allowedVerbs: Verb[],
+  ): T {
     config.fields = config.fields.map(x => {
       if (fieldAffectsData(x)) {
         if (!x.access) x.access = {};
-        x = this.cru(x, { feature: config.slug, trait: x.name }, config);
+        x = this.cru(
+          x,
+          { feature: config.slug, trait: x.name },
+          config,
+          allowedVerbs,
+        );
       }
       return x;
     });
@@ -149,15 +161,22 @@ export class Warden {
     it: T,
     { feature, trait }: { feature: string; trait?: string },
     parent: { custom?: any },
+    verbsToAffect: Verb[],
   ): T {
     const ex = {
       feature,
       traits: trait ? [trait] : [],
     };
 
-    it.access!.create = this.verbed(ex, it, verb.Verb.CREATE, parent);
-    it.access!.read = this.verbed(ex, it, verb.Verb.READ, parent);
-    it.access!.update = this.verbed(ex, it, verb.Verb.UPDATE, parent);
+    if (verbsToAffect.includes(verb.Verb.CREATE)) {
+      it.access!.create = this.verbed(ex, it, verb.Verb.CREATE, parent);
+    }
+    if (verbsToAffect.includes(verb.Verb.READ)) {
+      it.access!.read = this.verbed(ex, it, verb.Verb.READ, parent);
+    }
+    if (verbsToAffect.includes(verb.Verb.UPDATE)) {
+      it.access!.update = this.verbed(ex, it, verb.Verb.UPDATE, parent);
+    }
 
     return it;
   }
