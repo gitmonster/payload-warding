@@ -3,7 +3,7 @@
   "version": "0.1.11",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sinloss/payload-warding.git"
+    "url": "https://github.com/gitmonster/payload-warding.git"
   },
   "description": "A Collections / Globals Backed Payload RBAC Plugin",
   "main": "dist/index.js",
@@ -29,7 +29,7 @@
   "author": "391861737@qq.com",
   "license": "MIT",
   "peerDependencies": {
-    "payload": "^2.1.0"
+    "payload": "^2.11.0"
   },
   "devDependencies": {
     "@payloadcms/eslint-config": "^0.0.1",
@@ -58,7 +58,7 @@
     "git": {
       "tagName": "v${version}",
       "commitMessage": "chore: Release v${version}",
-      "pushRepo": "https://github.com/sinloss/payload-warding.git"
+      "pushRepo": "https://github.com/gitmonster/payload-warding.git"
     },
     "npm": {
       "publish": false
