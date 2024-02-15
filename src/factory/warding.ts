@@ -42,11 +42,11 @@ export class Warding {
     user.auth = true;
     user.hooks = {
       beforeValidate: [
-        async ({ data, req: { url, payload } }) => {
-          if (!data || url !== "/first-register") return data;
+        async ({ data, req }) => {
+          if (!data || req!.url !== "/first-register") return data;
 
           // assign the root role for the user of first registration
-          data[slug] = await has(payload, {
+          data[slug] = await has(req!.payload, {
             slug,
             where: { name: { equals: collections.root } },
           });
