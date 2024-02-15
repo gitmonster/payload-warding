@@ -9,6 +9,7 @@ import convention from "../../src/convention";
 
 import Chad from "./collections/Chad";
 import Subject from "./collections/Subject";
+import { Posts } from "./collections/Posts";
 
 function link(...modules: string[]): { [k: string]: string } {
   const m: { [k: string]: string } = {};
@@ -33,7 +34,7 @@ export default buildConfig({
     }),
   },
   editor: slateEditor({}),
-  collections: [Chad, Subject],
+  collections: [Chad, Subject, Posts],
   typescript: {
     outputFile: path.resolve(__dirname, "payload-types.ts"),
   },

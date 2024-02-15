@@ -21,7 +21,7 @@ const start = async (): Promise<void> => {
 
   // Add your own express routes here
 
-  app.listen(3000);
+  app.listen(3002);
 };
 
 start();
